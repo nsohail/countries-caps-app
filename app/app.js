@@ -2,7 +2,7 @@ var app = angular.module('cacApp', ['ngRoute']);
 
 app.constant('main_link', 'http://api.geonames.org/');
 app.constant('countries_path', 'countryInfoJSON');
-app.constant('username', 'iris_qu');
+//app.constant('username', 'iris_qu');
 
 
 //routes here
@@ -35,8 +35,8 @@ app.factory('getCountryList', ['$http', 'main_link', 'countries_path', function(
         method: 'GET',
         cache: true,
         params: {
-          callback: 'JSON_CALLBACK',
-          username: username
+          callback: 'JSON_CALLBACK'
+          //username: username
         }
       })
 
