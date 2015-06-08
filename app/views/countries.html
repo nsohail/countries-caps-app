@@ -10,15 +10,15 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr>
-			<!--<td>{{}}</td>
-			<td>{{}}</td>
-			<td>{{}}</td>
-			<td>{{}}</td>
-			<td>{{}}</td>
-			<td>{{}}</td>-->
+		<tr ng-repeat="object in countryData track by $index" ng-click="countryDetail(object.countryCode)">
+			<td>{{object.countryName}}</td>
+			<td>{{object.countryCode}}</td>
+			<td>{{object.capital}}</td>
+			<td>{{object.areaInSqKm | number}}</td>
+			<td>{{object.population | number}}</td>
+			<td>{{object.continent}}</td>
 		</tr>
 	</tbody>
 </table>
 
-<button type="button">Home</button>
+<a href="#/"><button type="button">Home</button></a>

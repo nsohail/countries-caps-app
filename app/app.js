@@ -14,13 +14,18 @@ app.config(['$routeProvider', function($routeProvider){
 	.when('/countries', {
 		templateUrl : 'views/countries.html',
 		controller : 'countriesCtrl'
-	});
+	})
+  .when('/countries/:country', {
+    templateUrl : 'views/country.html',
+    controller : 'detailCtrl'
+  });
+
 }]);
 
 
 
 //services here
-app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username', function($http, main_link, countries_path, username) {
+app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username', '$rootScope', function($http, main_link, countries_path, username, $rootScope) {
   return function(){
     return $http({
       url : main_link + countries_path,
@@ -32,17 +37,41 @@ app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username
       }
     })
     .success(function(data){
-      console.log(data.geonames);
+      $rootScope.countryData = data.geonames;
+      console.log($rootScope.countryData);
     });
+
+    function getCountryInfo(countryName) {
+      for(var x in $rootScope.countryData) {
+        if(x.countryCode == countryName) {
+          console.log(x);
+        }
+      }
+    }
   };
 
 }]);
 
 
+
+
+
 //controllers here
-app.controller('countriesCtrl', ['$scope', function($scope){
+app.controller('countriesCtrl', ['getCountryList', '$scope', '$location', function(getCountryList, $scope, $location){
+  getCountryList();
+
+  $scope.countryDetail = function(countryCode){
+    $location.path('/' + 'countries' + '/' + countryCode); ///countries/:country'
+  };
 
 }]);
-  
 
+
+app.controller('detailCtrl', ['$scope', '$route', 'getCountryList', function($scope, $route, getCountryList){
+  var countryCode = $route.current.params.country;
+  console.log(countryCode);
+
+  getCountryInfo();
+
+}]);
 
