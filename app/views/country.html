@@ -1,4 +1,22 @@
-<h2>Country Detail</h2>
+<h1>{{countryInfo.countryName}}</h1>
+
+<div class="countryResults">
+	<p>Population of Country:</p>
+	<p>{{countryInfo.population | number}}</p>
+
+	<p>Area:</p>
+	<p>{{countryInfo.areaInSqKm | number}}</p>
+
+	<p>Capital:</p>
+	<p>{{countryInfo.capital}}</p>
+
+	<p>Population of Capital:</p>
+	<p>{{}}</p>
+
+	<p>{{numNeighbors}} Neighbors:</p>
+	<p class="neighbors" ng-repeat="neighbor in neighborObjects">{{neighbor.countryName}}</p>
+
+</div>
 
 <a href="#/"><button type="button">Home</button></a>
 <a href="#/countries"><button type="button">Browse Countries</button></a>
