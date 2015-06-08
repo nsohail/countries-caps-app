@@ -48,20 +48,24 @@ app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username
 
 app.factory('getCountryInfo', ['$rootScope', function($rootScope){
   return function getCountryInfo(chosenCode) {
+    console.log('info working');
+
     for(var x in $rootScope.countryData) {
+      console.log('info working');
       var eachObject = $rootScope.countryData[x];
       
       if(eachObject.countryCode == chosenCode) {
         $rootScope.countryInfo = eachObject;
         $rootScope.countryCode = eachObject.countryCode;
         $rootScope.capital = eachObject.capital;
-        //console.log($rootScope.countryInfo);
       }
 
     }
   };
 
 }]);
+
+
 
 app.factory('getCountryCapInfo',['$rootScope', '$http', 'username', 'main_link', 'countries_path', function($rootScope,$http, username, main_link, countries_path){
   return function getCountryCapInfo(countryCode){
@@ -72,40 +76,39 @@ app.factory('getCountryCapInfo',['$rootScope', '$http', 'username', 'main_link',
       username:username
     };
 
-    //console.log(request);
-
     return $http({
-      url : main_link + countries_path,
+      url : main_link + 'searchJSON',
       method: 'GET',
       cache: true,
       params: request
     })
     .success(function(result){
-      //console.log(result);
+      var object = result.geonames;
+      $rootScope.capPop = object[0].population;
     });
   };
 }]);
 
-app.factory('getNeighbors', ['$http', 'username', '$rootScope', function($http, username, $rootScope){
+
+app.factory('getNeighbors', ['$http', 'username', '$rootScope', 'main_link', function($http, username, $rootScope, main_link){
   return function getNeighbors(countryCode){
+    console.log('neighbor working');
     return $http({
-      url : 'http://api.geonames.org/neighboursJSON?',
+      url : main_link + 'neighboursJSON?',
       method: 'GET',
       cache: true,
       params: {
-        //callback: 'JSON_CALLBACK',
         country: countryCode,
         username: username
       }
     })
     .success(function(result){
       $rootScope.neighborObjects = result.geonames;
-      
+
       if($rootScope.neighborObjects.length) {
 
         $rootScope.numNeighbors = $rootScope.neighborObjects.length;
         
-        console.log($rootScope.neighborObjects);
       }
       
     });
@@ -127,9 +130,8 @@ app.controller('countriesCtrl', ['getCountryList', '$scope', '$location', functi
 }]);
 
 
-app.controller('detailCtrl', ['$scope', '$route', 'getCountryInfo', 'getCountryCapInfo', 'getNeighbors', function($scope, $route, getCountryInfo, getCountryCapInfo, getNeighbors){
+app.controller('detailCtrl', ['$scope', '$route', 'getCountryInfo', 'getNeighbors', 'getCountryCapInfo', function($scope, $route, getCountryInfo, getNeighbors, getCountryCapInfo){
   var countryCode = $route.current.params.country;  ///countries/:country'
-  //console.log(countryCode);
 
   getCountryInfo(countryCode);
   getCountryCapInfo(countryCode);
