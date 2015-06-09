@@ -1,20 +1,33 @@
 <h1>{{countryInfo.countryName}}</h1>
 
 <div class="countryResults">
-	<p>Population of Country:</p>
-	<p>{{countryInfo.population | number}}</p>
+	<div class="result">
+		<p class="bold">Population of Country:</p>
+		<p>{{countryInfo.population | number}}</p>
+	</div>
+	<div class="result">
+		<p class="bold">Area:</p>
+		<p>{{countryInfo.areaInSqKm | number}}</p>
+	</div>
 
-	<p>Area:</p>
-	<p>{{countryInfo.areaInSqKm | number}}</p>
+	<div class="result">
+		<p class="bold">Capital:</p>
+		<p>{{countryInfo.capital}}</p>
+	</div>
 
-	<p>Capital:</p>
-	<p>{{countryInfo.capital}}</p>
+	<div class="result">
+		<p class="bold">Population of Capital:</p>
+		<p>{{capPop | number}}</p>
+	</div>
+	
+	<div class="result">
+		<p class="bold">{{numNeighbors}} Neighbors:</p>
+		<p class="neighbors" ng-repeat="neighbor in neighborObjects"><a ng-href="#/countries/{{neighbor.countryCode}}">{{neighbor.countryName}}</a></p>
+	</div>
 
-	<p>Population of Capital:</p>
-	<p>{{capPop}}</p>
+	<img id='myImage' src="http://www.geonames.org/img/country/250/{{countryCode | uppercase}}.png"/>
+	<img id='myImage' src="http://www.geonames.org/flags/x/{{countryCode | lowercase}}.gif"/>
 
-	<p>{{numNeighbors}} Neighbors:</p>
-	<p class="neighbors" ng-repeat="neighbor in neighborObjects">{{neighbor.countryName}}</p>
 
 </div>
 

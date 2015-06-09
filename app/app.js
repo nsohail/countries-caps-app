@@ -25,30 +25,39 @@ app.config(['$routeProvider', function($routeProvider){
 
 
 //services here
-app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username', '$rootScope', function($http, main_link, countries_path, username, $rootScope) {
-  return function(){
-    return $http({
-      url : main_link + countries_path,
-      method: 'GET',
-      cache: true,
-      params: {
-        //callback: 'JSON_CALLBACK',
-        username: username
-      }
-    })
-    .success(function(data){
-      $rootScope.countryData = data.geonames;
-    });
+app.factory('getCountryList', ['$http', '$q', 'main_link', 'countries_path', 'username', function($http, $q, main_link, countries_path, username) {
+  var g = {
+    getCountries: function() {
+
+      var deferred = $q.defer();
+
+        var req = $http({
+          url : main_link + countries_path,
+          method: 'GET',
+          cache: true,
+          params: {
+            //callback: 'JSON_CALLBACK',
+            username: username
+          }
+        });
+
+        req.success(function(data){
+          deferred.resolve(data.geonames);
+        });
+
+      return deferred.promise; //this returns the functions promise
+    
+    }
 
   };
+
+  return g; //this returns the object in the factory AKA the factory
 
 }]);
 
 
 app.factory('getCountryInfo', ['$rootScope', function($rootScope){
   return function getCountryInfo(chosenCode) {
-    console.log('info working');
-    console.log($rootScope.countryData);
 
     for(var x in $rootScope.countryData) {
       var eachObject = $rootScope.countryData[x];
@@ -119,8 +128,11 @@ app.factory('getNeighbors', ['$http', 'username', '$rootScope', 'main_link', fun
 
 
 //controllers here
-app.controller('countriesCtrl', ['getCountryList', '$scope', '$location', function(getCountryList, $scope, $location){
-  getCountryList();
+app.controller('countriesCtrl', ['getCountryList', '$scope', '$rootScope', '$location', function(getCountryList, $rootScope, $scope, $location){
+  
+  $rootScope.countryData = getCountryList.getCountries();
+
+  console.log($rootScope.countryData);
 
   $scope.countryDetail = function(chosenCode){
     $location.path('/' + 'countries' + '/' + chosenCode); ///countries/:country'
@@ -129,14 +141,14 @@ app.controller('countriesCtrl', ['getCountryList', '$scope', '$location', functi
 }]);
 
 
-app.controller('detailCtrl', ['$scope', '$route', 'getCountryInfo', 'getNeighbors', 'getCountryCapInfo', function($scope, $route, getCountryInfo, getNeighbors, getCountryCapInfo){
-  var countryCode = $route.current.params.country;  ///countries/:country'
+app.controller('detailCtrl', ['$rootScope', '$route', 'getCountryInfo', 'getNeighbors', 'getCountryCapInfo', function($rootScope, $route, getCountryInfo, getNeighbors, getCountryCapInfo){
 
-  console.log(countryCode);
+  $rootScope.countryCode = $route.current.params.country;  ///countries/:country'
 
-  getCountryInfo(countryCode);
-  getCountryCapInfo(countryCode);
-  getNeighbors(countryCode);
+  getCountryInfo($rootScope.countryCode);
+  getCountryCapInfo($rootScope.countryCode);
+  getNeighbors($rootScope.countryCode);
+
 
 }]);
 

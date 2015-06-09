@@ -10,7 +10,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="object in countryData track by $index" ng-click="countryDetail(object.countryCode)">
+		<tr ng-repeat="object in countries track by $index" ng-click="countryDetail(object.countryCode)">
 			<td>{{object.countryName}}</td>
 			<td>{{object.countryCode}}</td>
 			<td>{{object.capital}}</td>

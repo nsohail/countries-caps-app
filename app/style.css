@@ -1,0 +1,18 @@
+body {
+	font-family: sans-serif;
+}
+
+.result > p {
+	float: left;
+	margin-right: 10px;
+}
+
+.result > .bold {
+	font-weight: bold;
+}
+.result {
+	overflow: auto;
+}
+
+
+
