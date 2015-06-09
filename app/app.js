@@ -38,7 +38,6 @@ app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username
     })
     .success(function(data){
       $rootScope.countryData = data.geonames;
-      //console.log($rootScope.countryData);
     });
 
   };
@@ -49,9 +48,9 @@ app.factory('getCountryList', ['$http', 'main_link', 'countries_path', 'username
 app.factory('getCountryInfo', ['$rootScope', function($rootScope){
   return function getCountryInfo(chosenCode) {
     console.log('info working');
+    console.log($rootScope.countryData);
 
     for(var x in $rootScope.countryData) {
-      console.log('info working');
       var eachObject = $rootScope.countryData[x];
       
       if(eachObject.countryCode == chosenCode) {
@@ -132,6 +131,8 @@ app.controller('countriesCtrl', ['getCountryList', '$scope', '$location', functi
 
 app.controller('detailCtrl', ['$scope', '$route', 'getCountryInfo', 'getNeighbors', 'getCountryCapInfo', function($scope, $route, getCountryInfo, getNeighbors, getCountryCapInfo){
   var countryCode = $route.current.params.country;  ///countries/:country'
+
+  console.log(countryCode);
 
   getCountryInfo(countryCode);
   getCountryCapInfo(countryCode);
