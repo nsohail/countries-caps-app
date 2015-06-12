@@ -1,0 +1,26 @@
+{
+  "name": "countries-caps-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-connect": "^2.2.0"
+  },
+  "devDependencies": {
+    "gulp-connect": "^2.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://nsohail@github.com/nsohail/countries-caps-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nsohail/countries-caps-app/issues"
+  },
+  "homepage": "https://github.com/nsohail/countries-caps-app#readme"
+}

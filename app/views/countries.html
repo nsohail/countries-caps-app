@@ -9,8 +9,13 @@
 			<th>Continent</th>
 		</tr>
 	</thead>
+
+	<div class="loading" ng-show="isLoading"><p>Countries are loading...</p></div>
+
+
 	<tbody>
 		<tr ng-repeat="object in countries track by $index" ng-click="countryDetail(object.countryCode)">
+			
 			<td>{{object.countryName}}</td>
 			<td>{{object.countryCode}}</td>
 			<td>{{object.capital}}</td>

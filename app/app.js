@@ -1,4 +1,4 @@
-var app = angular.module('cacApp', ['ngRoute']);
+var app = angular.module('cacApp', ['ngRoute', 'ngAnimate']);
 
 app.constant('main_link', 'http://api.geonames.org/');
 app.constant('countries_path', 'countryInfoJSON');
@@ -18,10 +18,36 @@ app.config(['$routeProvider', function($routeProvider){
   .when('/countries/:country', {
     templateUrl : 'views/country.html',
     controller : 'detailCtrl'
+  })
+  .otherwise({
+    templateUrl : 'views/home.html'
   });
 
 }]);
 
+app.run(function($rootScope, $location, $timeout){
+
+  $rootScope.$on('$routeChangeStart', function(){
+    if($location.path() == '/'){
+       $rootScope.isLoading = false;
+       console.log('/');
+    } else{
+      $rootScope.isLoading = true;
+    }
+  });
+
+  $rootScope.$on('$routeChangeSuccess', function(){
+    if($location.path() == '/'){
+      $rootScope.isLoading = false;
+    }
+    else {
+      $timeout(function(){
+        $rootScope.isLoading = false;
+      },1000); 
+    }
+  });
+
+});
 
 
 //services here
