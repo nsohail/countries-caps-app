@@ -42,6 +42,7 @@ app.factory('getCountryList', ['$http', '$q', 'main_link', 'countries_path', 'us
         });
 
         req.success(function(data){
+          //console.log(deferred);
           deferred.resolve(data.geonames);
         });
 
@@ -56,19 +57,27 @@ app.factory('getCountryList', ['$http', '$q', 'main_link', 'countries_path', 'us
 }]);
 
 
-app.factory('getCountryInfo', ['$rootScope', function($rootScope){
+app.factory('getCountryInfo', ['$http', '$q', 'getCountryList', 'countries_path', function($http, $q, getCountryList, countries_path){
   return function getCountryInfo(chosenCode) {
+    console.log(chosenCode);
+    var deferred = $q.defer();
 
-    for(var x in $rootScope.countryData) {
-      var eachObject = $rootScope.countryData[x];
-      
-      if(eachObject.countryCode == chosenCode) {
-        $rootScope.countryInfo = eachObject;
-        $rootScope.countryCode = eachObject.countryCode;
-        $rootScope.capital = eachObject.capital;
-      }
+      var req = $http({
+        url : 'http://api.geonames.org/' + countries_path,
+        method: 'GET',
+        cache: true,
+        params: {
+          //callback: 'JSON_CALLBACK',
+          country: chosenCode,
+          username: "nsohail92"
+        }
+      });
+      req.success(function(data){
+        deferred.resolve(data.geonames);
+      });
 
-    }
+    return deferred.promise;
+    
   };
 
 }]);
@@ -100,7 +109,6 @@ app.factory('getCountryCapInfo',['$rootScope', '$http', 'username', 'main_link',
 
 app.factory('getNeighbors', ['$http', 'username', '$rootScope', 'main_link', function($http, username, $rootScope, main_link){
   return function getNeighbors(countryCode){
-    console.log('neighbor working');
     return $http({
       url : main_link + 'neighboursJSON?',
       method: 'GET',
@@ -128,11 +136,14 @@ app.factory('getNeighbors', ['$http', 'username', '$rootScope', 'main_link', fun
 
 
 //controllers here
-app.controller('countriesCtrl', ['getCountryList', '$scope', '$rootScope', '$location', function(getCountryList, $rootScope, $scope, $location){
+app.controller('countriesCtrl', ['getCountryList', '$scope', '$location', function(getCountryList, $scope, $location){
   
-  $rootScope.countryData = getCountryList.getCountries();
+  getCountryList.getCountries()
+  .then(function(data){
+    getCountryList.countryData = data;
+    $scope.countries = getCountryList.countryData;
+  });
 
-  console.log($rootScope.countryData);
 
   $scope.countryDetail = function(chosenCode){
     $location.path('/' + 'countries' + '/' + chosenCode); ///countries/:country'
@@ -141,13 +152,27 @@ app.controller('countriesCtrl', ['getCountryList', '$scope', '$rootScope', '$loc
 }]);
 
 
-app.controller('detailCtrl', ['$rootScope', '$route', 'getCountryInfo', 'getNeighbors', 'getCountryCapInfo', function($rootScope, $route, getCountryInfo, getNeighbors, getCountryCapInfo){
+app.controller('detailCtrl', ['$scope', '$route', 'getCountryInfo', 'getNeighbors', 'getCountryCapInfo', function($scope, $route, getCountryInfo, getNeighbors, getCountryCapInfo){
 
-  $rootScope.countryCode = $route.current.params.country;  ///countries/:country'
+  var countryCode = $route.current.params.country;  ///countries/:country'
 
-  getCountryInfo($rootScope.countryCode);
-  getCountryCapInfo($rootScope.countryCode);
-  getNeighbors($rootScope.countryCode);
+  //getCountryInfo(countryCode);
+  getCountryCapInfo(countryCode);
+  getNeighbors(countryCode);
+
+  getCountryInfo(countryCode)
+  .then(function(data){
+    getCountryInfo.countryDetail = data;
+    var countryInfo = getCountryInfo.countryDetail;
+
+    for(var m in countryInfo) {
+      $scope.countryPop = countryInfo[m].population;
+      $scope.countryArea = countryInfo[m].areaInSqKm;
+      $scope.countryCap = countryInfo[m].capital;
+    }
+    
+    console.log(countryInfo);
+  });
 
 
 }]);
